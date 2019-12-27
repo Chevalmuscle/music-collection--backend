@@ -1,24 +1,24 @@
-const MongoClient = require("mongodb").MongoClient;
-const url = process.env.MONGO_CONNECTION_URI;
+const { MongoClient, ObjectID } = require("mongodb");
+const connectionUrl = process.env.MONGO_CONNECTION_URI;
+const dbName = "music-collection";
+let db;
 
-let findAlbums = function(db, callback) {
-  let collection = db.db("music-collection").collection("albums");
-  collection.find().toArray(function(err, docs) {
-    if (err !== null) {
-      console.log(err);
-    }
-    callback(docs);
+const init = () =>
+  MongoClient.connect(connectionUrl, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  }).then(client => {
+    db = client.db(dbName);
   });
+
+const getAlbums = () => {
+  const collection = db.collection("albums");
+  return collection.find().toArray();
 };
 
-MongoClient.connect(url, { useUnifiedTopology: true }, function(err, db) {
-  if (err !== null) {
-    console.log(err);
-  }
-  findAlbums(db, function(albums) {
-    exports.getAlbums = function() {
-      return albums;
-    };
-    db.close();
-  });
-});
+const getAlbumById = id => {
+  const collection = db.collection("albums");
+  return collection.findOne({ _id: ObjectID(id) });
+};
+
+module.exports = { init, getAlbums, getAlbumById };
