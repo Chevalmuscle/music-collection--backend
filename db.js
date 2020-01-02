@@ -13,7 +13,10 @@ const init = () =>
 
 const getAlbums = () => {
   const collection = db.collection("albums");
-  return collection.find().toArray();
+  return collection
+    .find()
+    .toArray()
+    .then(data => data.sort((a, b) => (a.order > b.order ? 1 : -1)));
 };
 
 const getAlbumById = id => {
