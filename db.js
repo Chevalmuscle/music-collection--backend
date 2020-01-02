@@ -24,6 +24,26 @@ const getAlbumById = id => {
   return collection.findOne({ _id: ObjectID(id) });
 };
 
+const getAdjacentAlbums = (id, adjacentAlbumsCount) => {
+  const adjacentAlbums = [];
+
+  return getAlbums().then(albums => {
+    albums.forEach((album, index) => {
+      if (album._id.toString() === id) {
+        // previous albums
+        for (let i = index - adjacentAlbumsCount; i < index; i++) {
+          adjacentAlbums.push(albums[i]);
+        }
+        // following albums
+        for (let i = index + 1; i < index + adjacentAlbumsCount + 1; i++) {
+          adjacentAlbums.push(albums[i]);
+        }
+      }
+    });
+    return adjacentAlbums;
+  });
+};
+
 const getArtists = () => {
   const collection = db.collection("albums");
   return collection
@@ -47,4 +67,11 @@ const getArtistByName = name => {
     });
 };
 
-module.exports = { init, getAlbums, getAlbumById, getArtists, getArtistByName };
+module.exports = {
+  init,
+  getAlbums,
+  getAlbumById,
+  getAdjacentAlbums,
+  getArtists,
+  getArtistByName,
+};

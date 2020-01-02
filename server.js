@@ -3,6 +3,7 @@ var cors = require("cors");
 const {
   getAlbums,
   getAlbumById,
+  getAdjacentAlbums,
   getArtists,
   getArtistByName,
   init,
@@ -23,6 +24,13 @@ app.get("/albums", (req, res) => {
 
 app.get("/albums/:id", (req, res) => {
   getAlbumById(req.params.id).then(album => res.json(album));
+});
+
+app.get("/albums/:id/:adjacentAlbumsCount", (req, res) => {
+  getAdjacentAlbums(
+    req.params.id,
+    parseInt(req.params.adjacentAlbumsCount),
+  ).then(albums => res.json(albums));
 });
 
 app.get("/artists", (req, res) => {
