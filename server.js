@@ -1,6 +1,12 @@
 const express = require("express");
 var cors = require("cors");
-const { init, getAlbums, getAlbumById } = require("./db");
+const {
+  getAlbums,
+  getAlbumById,
+  getArtists,
+  getArtistByName,
+  init,
+} = require("./db");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,6 +23,14 @@ app.get("/albums", (req, res) => {
 
 app.get("/albums/:id", (req, res) => {
   getAlbumById(req.params.id).then(album => res.json(album));
+});
+
+app.get("/artists", (req, res) => {
+  getArtists().then(artists => res.json(artists));
+});
+
+app.get("/artists/:name", (req, res) => {
+  getArtistByName(req.params.name).then(artist => res.json(artist));
 });
 
 init().then(() =>

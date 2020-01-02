@@ -24,4 +24,27 @@ const getAlbumById = id => {
   return collection.findOne({ _id: ObjectID(id) });
 };
 
-module.exports = { init, getAlbums, getAlbumById };
+const getArtists = () => {
+  const collection = db.collection("albums");
+  return collection
+    .find()
+    .toArray()
+    .then(data => Array.from(new Set(data.map(album => album.artists).flat())));
+};
+
+const getArtistByName = name => {
+  const collection = db.collection("albums");
+  return collection
+    .find()
+    .toArray()
+    .then(everyAlbums => {
+      const albums = everyAlbums.filter(album => {
+        var regex = new RegExp(album.artists.join("|"), "i");
+        return regex.test(name);
+      });
+
+      return { albums: albums };
+    });
+};
+
+module.exports = { init, getAlbums, getAlbumById, getArtists, getArtistByName };
